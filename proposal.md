@@ -123,6 +123,111 @@ FROM FINAL TABLE (
 - **T4xx-01, "Include columns of LOB and XML types":** lifts syntax rule 4. Requires T4xx. *(Provisional.)*
 - The MERGE exclusion in syntax rule 11 matters only for implementations that also claim F314, "MERGE statement with DELETE branch".
 
+## Implementation and conformance clarifications
+
+The following points make the proposal testable without changing its core relation and row-value
+semantics. They are part of the working proposal and should be reconciled with the SQL:2023 text
+at Research Gate 2 before submission.
+
+### Result-option matrix
+
+The result option applies to the target-row portion of the delta table only. Include values are
+unchanged by the option. The initially proposed supported combinations are:
+
+| Data-change statement | `OLD TABLE` | `NEW TABLE` | `FINAL TABLE` |
+| --- | --- | --- | --- |
+| `INSERT` | invalid | inserted target rows | inserted target rows |
+| `UPDATE` | pre-update target rows | post-update target rows | final post-statement target rows |
+| `MERGE` without `DELETE` | **open**: define whether this is the pre-update subset or invalid | inserted and updated target rows | inserted and updated final target rows |
+| `MERGE` with `DELETE` | invalid for this proposal | invalid for this proposal | invalid for this proposal |
+
+For an implementation without triggers, deferred actions, or other statement-end row changes,
+`NEW` and `FINAL` may produce identical target images. That equivalence must not be used to make
+`FINAL` an alias for `NEW` in the general standard text.
+
+### Assignment and datatype behavior
+
+An include value uses the same store-assignment rules as a value assigned to a target column:
+
+- the declared include datatype is the target type for contextual typing and conversion;
+- conversion, precision, scale, truncation, and representation errors are diagnosed at the
+  assignment point;
+- a `NULL` include value is valid because include columns are always nullable;
+- an include column that is not assigned by the action has the null value;
+- an explicit `DEFAULT` for an include column produces the null value, rather than importing the
+  target column's default;
+- `DEFAULT VALUES` produces a null value for every include column.
+
+The proposal currently leaves LOB, XML, and distinct-type restrictions provisional. The final text
+must either specify the dependency on T4xx-01 or state that the implementation supports those
+types.
+
+### Insert degree and implicit columns
+
+For `INSERT`, the source degree is the effective target insert-column-list degree plus the include
+degree. Include values are the final source values, in declaration order. The effective target
+column list is determined before the include columns are appended; generated or implicitly hidden
+target columns follow the ordinary `INSERT` rules and are never reclassified as include columns.
+
+An implementation must diagnose a source-degree mismatch before changing any target row.
+
+### MERGE action rules
+
+The include definition is statement-wide, but values are action-local:
+
+- an include value assigned by a matched `UPDATE` comes from that update action;
+- an include value assigned by a not-matched `INSERT` comes from that insert action;
+- an include column not assigned by the selected action is null;
+- an update action or insert specification that assigns/names only include columns is invalid;
+- a MERGE used as a delta table must reject the statement if it contains a delete action, rather
+  than silently omitting deleted rows.
+
+The result row order remains unspecified. Consumers must correlate rows using explicit include
+values, not execution order or generated-key contiguity.
+
+### Views and query composition
+
+The proposal should state explicitly whether data-change delta tables may target updatable views.
+If they are allowed, the target portion follows the view row type and the include columns are
+appended after the view columns; view check-option and privilege rules remain in force. If they
+are not allowed, the grammar or access rules must reject them rather than treating them as base
+table mutations.
+
+The resulting delta table is an ordinary table reference for the containing query. Its columns
+may therefore be projected, filtered, grouped, ordered, joined, or used in a derived table, subject
+to the ordinary rules for table references. The include columns remain assignment-only inside the
+data-change statement; they are not visible to that statement's right-hand expressions,
+constraints, or triggers.
+
+### Diagnostics, atomicity, and metadata
+
+- A source-degree, duplicate-name, invalid-assignment, datatype, privilege, or constraint error
+  prevents the data-change statement from producing a delta result and leaves the target unchanged
+  according to the transaction rules of the containing statement.
+- An empty delta result still exposes the complete row type: target columns followed by include
+  columns, with declared include datatypes and nullable metadata.
+- No ordering, uniqueness, or contiguity guarantee is implied by a delta table.
+- A failed containing query does not make a partially produced delta result observable.
+
+### Conformance matrix
+
+Before the proposal is treated as implementation-complete, the conformance suite should include
+at least the following cases:
+
+| Area | Required evidence |
+| --- | --- |
+| Syntax | `INSERT`, `UPDATE`, and `MERGE` forms; aliases; multiple include columns; malformed and duplicate definitions |
+| Binding | source-degree checks; target/include name collisions; declared datatype resolution; assignment-only visibility |
+| INSERT | `VALUES`, `INSERT ... SELECT`, omitted target columns, generated target columns, `DEFAULT`, and `DEFAULT VALUES` |
+| UPDATE | old/new/final images; pre-update right-hand-side evaluation; assigned and unassigned include columns |
+| MERGE | matched update, not-matched insert, branch-local values, no-match rows, duplicate matches, and delete rejection |
+| Semantics | nullability, conversion, precision/scale, empty results, row-type metadata, and unspecified ordering |
+| Transactions | rollback on failure, explicit transactions, autocommit, and visibility of the delta result |
+| Security | unchanged target/reference privilege requirements and no privilege invented for ephemeral include columns |
+| Composition | projection, predicates, joins, grouping, ordering, and derived-table use of delta columns |
+
+The matrix is a minimum evidence set, not a claim that the proposal is certified SQL conformance.
+
 ## Exclusions and rationale
 
 - **Standalone DELETE.** Excluded from the initial feature. It doesn't address the source-correlation problem, because standard DELETE has no independent source relation, and it would require a new assignment clause on DELETE. Db2 permits INCLUDE on DELETE. Adding it later wouldn't change the semantics defined here.
