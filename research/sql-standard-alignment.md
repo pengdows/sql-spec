@@ -9,6 +9,7 @@ This file tracks the work needed to turn the semantic proposal in [`proposal.md`
 - [ ] Verify the exact UPDATE and MERGE correlation-name grammar.
 - [ ] Determine whether the grammar already disambiguates `INCLUDE <left paren>` without a special Syntax Rule.
 - [ ] Verify the SQL standard's exact terminology and rules for an omitted INSERT column list.
+- [ ] Verify the placement of `<include column clause>` relative to the INSERT `<override clause>` and the standard `<insert column list>` production.
 - [ ] Verify the exact production(s) governing `<contextually typed value specification>` in the affected positions.
 - [ ] Verify the normative MERGE and delta-table rules for MERGE actions containing DELETE.
 - [ ] Verify whether `INCLUDE` is already a SQL key word and, if so, whether it is reserved or non-reserved.

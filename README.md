@@ -22,4 +22,6 @@ The proposal is a work in progress. Core feature semantics are specified; exact 
 
 `proposal.md` is the canonical development source. Formal committee submissions should be generated from a tagged repository revision so the exact submitted text remains reproducible.
 
+The intended workflow is: tag the exact revision, generate the committee-facing artifact, record the submission and disposition under [`submissions/`](submissions/), and link articles directly to [`proposal.md`](proposal.md) rather than only to the repository root.
+
 Committee-owned working drafts and substantial copyrighted standards text should not be committed to this repository.

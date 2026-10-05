@@ -25,8 +25,8 @@ Db2's implicit insert column list covers every column not defined as implicitly 
 
 ## Related vendor mechanisms
 
-- [PostgreSQL MERGE](https://www.postgresql.org/docs/18/sql-merge.html) provides `MERGE ... RETURNING`, including source/target visibility in modern releases.
-- [SQL Server MERGE](https://learn.microsoft.com/en-us/sql/t-sql/statements/merge-transact-sql?view=sql-server-ver17) provides `OUTPUT`, which can expose values associated with the DML operation.
+- [PostgreSQL MERGE](https://www.postgresql.org/docs/18/sql-merge.html) in PostgreSQL 17+ provides `MERGE ... RETURNING`, which can reference source columns. PostgreSQL `INSERT ... RETURNING` cannot reference source columns from an `INSERT ... SELECT`.
+- [SQL Server MERGE](https://learn.microsoft.com/en-us/sql/t-sql/statements/merge-transact-sql?view=sql-server-ver17) provides `OUTPUT`, which can reference source columns for MERGE. SQL Server `INSERT ... OUTPUT` cannot reference the source columns of an `INSERT ... SELECT` in the same way.
 - [jOOQ data change delta tables](https://www.jooq.org/doc/latest/manual/sql-building/table-expressions/data-change-delta-tables/) independently documents the OLD/NEW/FINAL row-image model used by Db2-style delta tables.
 
 These are related mechanisms, not evidence that the proposed syntax or semantics are already standardized.
@@ -35,4 +35,4 @@ These are related mechanisms, not evidence that the proposed syntax or semantics
 
 The portable gap is not merely returning generated values. It is preserving a source-side or operation-local correlation value on the same relational row as the target row image produced by the data change.
 
-Vendor RETURNING/OUTPUT facilities solve adjacent cases, but do not establish one portable T495 mechanism for passing non-target values through the data change delta table.
+The asymmetry is significant: PostgreSQL and SQL Server both recognize the need to expose source-side values for MERGE, but not through ordinary INSERT source correlation. In practice, an INSERT-only use case can be forced through MERGE with an `ON 1 = 0` pattern, which is a vendor-specific workaround rather than a portable T495 mechanism. Vendor RETURNING/OUTPUT facilities therefore solve adjacent cases, but do not establish one portable mechanism for passing non-target values through a data change delta table.

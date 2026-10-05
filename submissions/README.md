@@ -10,4 +10,6 @@ Recommended workflow:
 4. Store the submission artifact or a manifest/reference to it here, subject to committee distribution and copyright rules.
 5. Record the committee document number, submission date, meeting, and resulting disposition.
 
+This tag-and-record workflow preserves a reproducible chain from the public proposal to the exact artifact submitted and its eventual committee disposition.
+
 Do not place committee-owned working drafts or substantial copyrighted standards text in this repository.
