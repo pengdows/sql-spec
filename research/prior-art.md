@@ -9,7 +9,8 @@ This file separates supporting implementation research from the normative propos
 | INCLUDE on INSERT, UPDATE, DELETE, and MERGE | Demonstrated in Db2 documentation |
 | Include columns are appended to the intermediate/result row | Demonstrated |
 | Include columns are nullable; unassigned values are null | Demonstrated |
-| Explicit DEFAULT on an include column yields null | Demonstrated |
+| Explicit DEFAULT for an include-column position yields null | Demonstrated in Db2 for z/OS MERGE documentation |
+| Omitted include column in a MERGE insert list yields null | Demonstrated in Db2 for z/OS MERGE documentation |
 | LONG VARCHAR, LONG VARGRAPHIC, LOB, XML, and derived distinct types are restricted in the documented z/OS MERGE form | Demonstrated |
 | MERGE containing a DELETE action is rejected as a data-change table | Demonstrated; SQLCODE -270 |
 | Include-only UPDATE/MERGE UPDATE and include-only MERGE INSERT assignment lists are rejected | Demonstrated; SQLCODE -20260, SQLSTATE 428G5 |
