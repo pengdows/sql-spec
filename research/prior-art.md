@@ -21,8 +21,11 @@ Primary references:
 - [Db2 for z/OS MERGE](https://www.ibm.com/docs/en/db2-for-zos/12.0.0?topic=statements-merge)
 - [Db2 for z/OS INSERT](https://www.ibm.com/docs/en/db2-for-zos/12.0.0?topic=statements-insert)
 - [Db2 for z/OS SQLCODE -20260](https://www.ibm.com/docs/en/db2-for-zos/12.0.0?topic=codes-20260)
+- [Returning Modified Rows – SELECT Statements with Side Effects](https://www.cs.toronto.edu/vldb04/protected/eProceedings/contents/pdf/IND1P1.PDF) — Behm, Rielau, and Swagerman, VLDB 2004
 
 Db2's implicit insert column list covers every column not defined as implicitly hidden. That is useful prior art for the proposal's omitted-column-list case, but the SQL standard's exact terminology still needs to be verified.
+
+The VLDB paper is especially relevant because it treats data-change results as relations, supports additional include columns, and motivates the design through fewer round trips, pipelined data changes, and set-oriented processing. It is cited by P02-USA-200 itself, so it is evidence of the requirement's history rather than merely a vendor-specific implementation reference.
 
 ## Related vendor mechanisms
 

@@ -16,6 +16,7 @@ The proposal is a work in progress. Core feature semantics are specified; exact 
 - [research/prior-art.md](research/prior-art.md) — vendor prior art and related mechanisms
 - [research/P02-USA-200.md](research/P02-USA-200.md) — standards-history research gate
 - [research/sql-standard-alignment.md](research/sql-standard-alignment.md) — SQL standard integration checklist
+- [research/committee-response-posture.md](research/committee-response-posture.md) — likely committee questions and response posture
 - [submissions/README.md](submissions/README.md) — immutable records of formal submissions
 
 ## Working model

@@ -195,6 +195,8 @@ Db2 also rejects UPDATE and MERGE UPDATE actions that assign only include column
 
 Comment P02-USA-200 (DM32.2-2013-00032R2, comment 22, Major Technical) identified a closely related requirement: communicating additional information from a data change delta table, including which MERGE branch fired. It supplied no solution text. The disposition and subsequent treatment remain under review. This proposal does not claim to implement an adopted disposition of that comment.
 
+The committee-facing questions, alternatives considered, and response posture are recorded in [`research/committee-response-posture.md`](research/committee-response-posture.md). That document is rationale and submission support; it is not normative text.
+
 ## Provisional rules
 
 These fill gaps an implementer would otherwise hit. **Every item in this table is provisional and pending verification against the relevant ISO/IEC 9075-2:2023 Part 2 grammar, Syntax Rules, General Rules, and Access Rules. Annex F is relevant only to feature classification.** The table is not intended to imply that the cited wording is already present in, or settled by, SQL:2023.
