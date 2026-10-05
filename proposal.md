@@ -52,6 +52,8 @@ MERGE INTO t [ [ AS ] c ] [ <include column clause> ] USING ... ON ... <when cla
 
 The INSERT schematic intentionally uses the standard `<insert column list>` production rather than expanding it. Its exact placement relative to any `<override clause>` is provisional pending the Gate 2 grammar walk. `INCLUDE` is a non-reserved word *(provisional; see Provisional rules)*.
 
+## Function
+
 An **include column** is a column of the row type of a data change delta table that is declared by an `<include column clause>`, is not a column of the target table or view, and exists only for evaluation of the containing data change delta table.
 
 ## Syntax rules
@@ -59,19 +61,19 @@ An **include column** is a column of the row type of a data change delta table t
 1. **Delta tables only.** An `<include column clause>` may appear only when the data change statement is directly contained in a `<data change delta table>`.
 2. **Unique names.** Include column names must be distinct from each other and from every column of the target table or view.
 3. **Definitions.** An include column definition is a name and a data type, with no constraints and no default.
-4. **Data types.** **Provisional, pending verification against ISO/IEC 9075-2:2023 Part 2:** Without feature T4xx-01, the declared type of an include column shall not be a LOB type, the XML type, `LONG VARCHAR`, `LONG VARGRAPHIC`, or a distinct type based on one of those types. Annex F is relevant only to the classification of T4xx-01. The final restricted type set and feature boundary remain subject to the Part 2 review.
+4. **Data types.** **Provisional, pending verification against ISO/IEC 9075-2:2023 Part 2:** Without feature T4xx-01, the declared type of an include column shall not be a LOB type, the XML type, or a distinct type based on either.
 5. **INSERT degree.** If the insert source supplies an explicit row value, the number of values in each supplied row shall equal the number of columns in the explicit or implicit insert column list plus the number of include columns declared by the `<include column clause>`. Values corresponding to include columns follow the values corresponding to target columns, in declaration order. If an implicit insert column list is used, its membership and ordering are determined entirely by the existing rules for an omitted insert column list; include columns are not members of that implicit list.
 6. **SET assignment.** A `<set clause>` in an UPDATE statement or MERGE update action may assign an include column. Each include column is assigned at most once per `<set clause list>`. An UPDATE statement or MERGE update action that assigns an include column shall contain at least one assignment to a column of the target table or view.
 7. **MERGE insert.** **Provisional, pending verification against the SQL:2023 Part 2 MERGE grammar and Syntax Rules:** A `<merge insert specification>` column list may name include columns. A value in an include column's position assigns that column and isn't inserted into the target. Each include column may be named at most once in the column list. A `<merge insert specification>` that names an include column shall also name at least one column of the target table or view.
-8. **Contextual typing.** **Provisional, pending verification against the SQL:2023 Part 2 grammar and Syntax Rules:** Where a value specification occurs in a position corresponding to an include column, that position has the declared data type of the include column for purposes of contextual typing. An include column definition has no default. `DEFAULT` in such a position yields the null value of that declared type.
+8. **Contextual typing.** **Provisional, pending verification against the SQL:2023 Part 2 grammar and Syntax Rules:** Where a value specification occurs in a position corresponding to an include column, that position has the declared data type of the include column for purposes of contextual typing. An include column definition has no default. `DEFAULT` in such a position is contextually typed as the declared type of the include column.
 9. **Assignment only.** An include column can't be referenced except as an assignment target and through the containing query's use of the delta table. In particular, it can't appear on the right-hand side of an assignment. **The requirement that an include-column assignment target be specified without qualification is provisional, pending verification against the SQL:2023 UPDATE and MERGE assignment-target productions.**
 10. **Exclusions.** Not permitted on a `<delete statement>`, or on a `<merge statement>` that contains a `<merge delete specification>`. **The MERGE-with-DELETE interaction is also subject to verification against the existing SQL:2023 MERGE and delta-table rules.**
 
 ## General rules
 
 1. **Row type.** The delta table's row type is the target's row type (the view's, for a view target) followed by the include columns, in declaration order.
-2. **Assignment.** A value assigned to an include column is assigned according to the existing General Rules for store assignment, with the include column as the target. *(Provisional; the subclause number and exact cross-reference must be verified against SQL:2023.)*
-3. **Values and nullability.** Include columns are nullable. For each row of the delta table, an include column contains the value assigned while producing that row. If the action that produced the row doesn't assign that include column, its value is null. `DEFAULT VALUES` assigns the null value to every include column. `DEFAULT` in an include-column position assigns the null value of the declared type.
+2. **Assignment.** A value assigned to an include column is assigned according to the existing General Rules for store assignment, with the include column as the target. `DEFAULT` in an include-column position assigns the null value of the declared type. *(Provisional; the subclause number and exact cross-reference must be verified against SQL:2023.)*
+3. **Values and nullability.** Include columns are nullable. For each row of the delta table, an include column contains the value assigned while producing that row. If the action that produced the row doesn't assign that include column, its value is null.
 4. **Scope and visibility.** Include-column values are evaluated as part of the data change statement and are available only in the corresponding row of the data change delta table. They are not columns of the target table or view and do not constitute insertion into, update of, or deletion from the target. They do not participate in the evaluation of target-table constraints, assertions, generated-column expressions, referential constraints, transition variables, transition tables, referential actions, or triggered SQL statements.
 5. **Privileges.** **Provisional, pending verification against SQL:2023 access rules:** The presence of an `<include column clause>` introduces no additional privilege requirement. Existing privilege requirements for the target, referenced objects, expressions, and the containing query are unchanged.
 6. **Assignment evaluation unchanged.** Right-hand sides in `SET` see pre-update values.
@@ -161,7 +163,7 @@ FROM FINAL TABLE (
 ## Conformance
 
 - **T4xx, "Include columns in data change delta tables":** a new optional feature (number to be assigned). Requires T495. The title and every T4xx reference in this proposal must be updated when INCITS assigns the feature number.
-- **T4xx-01, "Include columns of LOB, XML, and long character types":** provisionally lifts the type restriction in Syntax Rule 4. Requires T4xx. The final restricted type set, title, feature classification, and dependency wording are subject to verification against SQL:2023 Part 2 and Annex F.
+- **T4xx-01, "Include columns of LOB and XML types":** provisionally lifts the type restriction in Syntax Rule 4. Requires T4xx. The final type set, title, feature classification, and dependency wording are subject to verification against SQL:2023 Part 2 and Annex F.
 - **MERGE with DELETE:** T4xx does not introduce a separate conformance claim for MERGE delete branches. Its applicability to a MERGE containing a delete branch remains subject to verification against the existing SQL:2023 MERGE and delta-table rules.
 
 ## Exclusions and rationale
@@ -170,7 +172,7 @@ FROM FINAL TABLE (
 - **MERGE with a DELETE action.** The new delta table of a MERGE is the union of its INSERT and UPDATE delta tables, so deleted rows have no image in it. Db2 likewise rejects a MERGE containing a delete operation when it is used as a data-change table (SQLCODE -270). The rule rejects the statement rather than silently dropping rows, and can be relaxed later without breaking existing code.
 - **Action pseudo-column.** Out of scope. The same information is available by assigning an include column in each branch.
 
-The base type restriction addresses implementation-defined lifetime and materialization semantics for values that can be locator-based or externally represented. An include-column value must remain available in the data change delta table after evaluation of the target-row modification while not becoming a stored attribute of that target row. Locator-based or deferred values can require lifetime, materialization, ownership, and resource-management semantics beyond ordinary scalar assignment. T4xx-01 permits an implementation to provide those semantics.
+The provisional base type restriction addresses implementation-defined lifetime and materialization semantics for values that can be locator-based or externally represented. An include-column value must remain available in the data change delta table after evaluation of the target-row modification while not becoming a stored attribute of that target row. Locator-based or deferred values can require lifetime, materialization, ownership, and resource-management semantics beyond ordinary scalar assignment. T4xx-01 permits an implementation to provide those semantics.
 
 ## Prior art
 
@@ -230,7 +232,7 @@ The gate deliverable is the exact comment text, ballot-cycle identification, WG/
 - Read the normative MERGE and delta-table rules for an existing MERGE+DELETE restriction.
 - Check whether INCLUDE is in the 2023 key-word list, whether it is reserved or non-reserved, and whether the grammar already disambiguates `INCLUDE <left paren>` without a special Syntax Rule.
 - Verify the subclause number and exact rules for store assignment; check existing Access Rules, collation derivation, datatype feature dependencies, and whether assignment-target qualification is already enforced by the grammar.
-- Check ISO/IEC 9075-2:2023/Cor 1:2026 for changes affecting `<data change delta table>`, `INSERT`, `UPDATE`, or `MERGE`.
+- Obtain ISO/IEC 9075-2:2023/Cor 1:2026 (published or current ballot text) and check it for changes affecting `<data change delta table>`, `INSERT`, `UPDATE`, or `MERGE`.
 - Check any other amendment, in-ballot, or current-draft change touching those productions.
 
 ## Revision notes

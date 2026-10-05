@@ -18,7 +18,7 @@ This file tracks the work needed to turn the semantic proposal in [`proposal.md`
 - [ ] Verify existing collation derivation rules for declared include-column character types.
 - [ ] Verify datatype feature dependencies before freezing T4xx-01.
 - [ ] Verify whether assignment-target qualification is already prohibited by the existing grammar.
-- [ ] Check ISO/IEC 9075-2:2023/Cor 1:2026 for changes affecting `<data change delta table>`, `INSERT`, `UPDATE`, or `MERGE`.
+- [ ] Obtain ISO/IEC 9075-2:2023/Cor 1:2026 (published or current ballot text) and check it for changes affecting `<data change delta table>`, `INSERT`, `UPDATE`, or `MERGE`.
 - [ ] Check any other amendment, in-ballot, or current-draft change touching those productions.
 - [ ] Produce exact edit instructions against the committee's current working draft.
 - [ ] Replace placeholder feature identifiers T4xx/T4xx-01 with committee-assigned identifiers.
