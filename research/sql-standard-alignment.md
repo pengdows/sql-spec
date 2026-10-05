@@ -43,3 +43,22 @@ The proxy is not evidence of the actual Annex F text and must be replaced by a d
 - Collation treatment.
 
 The target is to reuse existing SQL semantic machinery wherever possible rather than introduce parallel rules.
+
+## Proposal traceability matrix
+
+| Proposal element | SQL:2023 material to verify | Decision required |
+| --- | --- | --- |
+| Data change delta table attachment | `<data change delta table>` and contained statement productions | Statement contexts and result-option applicability |
+| INSERT clause placement | `<insert statement>` and `<override clause>` | Whether `INCLUDE` precedes or follows override syntax |
+| Omitted insert list | INSERT Syntax Rules | Exact terminology and hidden/generated-column treatment |
+| UPDATE target and correlation syntax | `<update statement>` and target/correlation productions | Whether ambiguity exists and where the clause fits |
+| UPDATE assignment target | `<set clause>` and assignment-target productions | Whether unqualified include targets require a new rule |
+| MERGE target and correlation syntax | `<merge statement>` and target productions | Proper attachment point and ambiguity behavior |
+| MERGE insert specification | Column-list and value-source productions | Include-column membership and degree constraints |
+| MERGE delete plus delta table | Existing MERGE and delta-table General Rules | Whether an exclusion is required or already implied |
+| Contextually typed values | Relevant value-specification Syntax Rules | Type context for `NULL`, parameter markers, and `DEFAULT` |
+| Store assignment | Existing assignment General Rules | Exact cross-reference and conversion semantics |
+| Access Rules | DML and query Access Rules | Whether “no additional privilege requirement” is sufficient |
+| Character collation | Column/type and expression collation rules | Whether an explicit no-new-rule statement is correct |
+| Keyword list | Reserved/non-reserved keyword provisions | Whether `INCLUDE` needs lexical or grammar treatment |
+| Corrections and amendments | Corrigendum and in-ballot changes | Whether any relevant production has changed |
