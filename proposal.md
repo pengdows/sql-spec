@@ -4,7 +4,7 @@
 **Date:** Sep 28, 2026<br>
 **Author:** Alaric [full name to be supplied]<br>
 **Submitted by:** Alaric, on behalf of the Pengdows project<br>
-**Status:** Draft proposal to extend feature T495 (Combined data change and retrieval) with declared pass-through columns for INSERT, UPDATE, and MERGE. The core semantics are settled; final standards integration and the explicitly marked provisional rules await two research gates: the disposition of ballot comment P02-USA-200 and verification against ISO/IEC 9075-2:2023.
+**Status:** Draft proposal to extend feature T495 (Combined data change and retrieval) with declared pass-through columns for INSERT, UPDATE, and MERGE. The core semantic design is settled; final standards integration and the explicitly marked provisional rules await two research gates: the disposition of ballot comment P02-USA-200 and verification against ISO/IEC 9075-2:2023.
 
 When INCITS assigns the document number and feature number, replace the placeholders in this heading and metadata. The subfeature identifier and name, currently T4xx-01, must be updated at the same time.
 
@@ -183,7 +183,7 @@ The provisional base type restriction addresses implementation-defined lifetime 
 | Include columns nullable; unassigned values null | [Db2 for z/OS (MERGE)](https://www.ibm.com/docs/en/db2-for-zos/12.0.0?topic=statements-merge) | Demonstrated |
 | DEFAULT for an include-column position yields null | Db2 for z/OS MERGE | Demonstrated |
 | Omitted include column in a MERGE insert list yields null | Db2 for z/OS MERGE | Demonstrated |
-| LONG VARCHAR, LONG VARGRAPHIC, LOB, XML, and derived distinct types disallowed | [Db2 for z/OS (MERGE)](https://www.ibm.com/docs/en/db2-for-zos/12.0.0?topic=statements-merge) | Demonstrated |
+| Db2-specific LONG VARCHAR, LONG VARGRAPHIC, LOB, XML, and derived distinct types disallowed | [Db2 for z/OS (MERGE)](https://www.ibm.com/docs/en/db2-for-zos/12.0.0?topic=statements-merge) | Demonstrated vendor restriction |
 | MERGE with delete rejected as a data-change table | Db2 (SQLCODE -270) | Demonstrated |
 | Include-only UPDATE or INSERT assignment rejected | [Db2 for z/OS (SQLCODE -20260, SQLSTATE 428G5)](https://www.ibm.com/docs/en/db2-for-zos/12.0.0?topic=codes-20260) | Demonstrated |
 | INCLUDE combined with OLD TABLE | Derived from two documented Db2 rules | Design-derived, no example found |

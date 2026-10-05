@@ -38,7 +38,7 @@ The proxy is not evidence of the actual Annex F text and must be replaced by a d
 - Contextual typing.
 - Privilege/access-rule wording.
 - LOB/XML datatype restriction and T4xx-01 split.
-- `INCLUDE` keyword/correlation-name ambiguity.
+- `INCLUDE` keyword treatment and clause placement.
 - Assignment-target qualification.
 - Omitted INSERT column-list terminology.
 - Collation treatment.
