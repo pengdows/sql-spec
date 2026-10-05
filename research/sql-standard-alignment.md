@@ -16,12 +16,12 @@ This file tracks the work needed to turn the semantic proposal in [`proposal.md`
 - [ ] Verify the current subclause number and exact rules for store assignment.
 - [ ] Inspect existing Access Rules before freezing the provisional privilege rule.
 - [ ] Verify existing collation derivation rules for declared include-column character types.
-- [ ] Verify datatype feature dependencies before freezing T4xx-01.
+- [ ] Verify the existing SQL:2023 data-type applicability rules for data change delta tables; do not infer a restriction from vendor behavior.
 - [ ] Verify whether assignment-target qualification is already prohibited by the existing grammar.
 - [ ] Obtain ISO/IEC 9075-2:2023/Cor 1:2026 (published or current ballot text) and check it for changes affecting `<data change delta table>`, `INSERT`, `UPDATE`, or `MERGE`.
 - [ ] Check any other amendment, in-ballot, or current-draft change touching those productions.
 - [ ] Produce exact edit instructions against the committee's current working draft.
-- [ ] Replace placeholder feature identifiers T4xx/T4xx-01 with committee-assigned identifiers.
+- [ ] Replace placeholder feature identifier T4xx with the committee-assigned identifier.
 
 ## Public proxy evidence
 
@@ -37,7 +37,7 @@ The proxy is not evidence of the actual Annex F text and must be replaced by a d
 - Store-assignment clause reference.
 - Contextual typing.
 - Privilege/access-rule wording.
-- LOB/XML datatype restriction and T4xx-01 split.
+- Data-type applicability under the existing data change delta table rules.
 - `INCLUDE` keyword treatment and clause placement.
 - Assignment-target qualification.
 - Omitted INSERT column-list terminology.
@@ -57,6 +57,7 @@ The target is to reuse existing SQL semantic machinery wherever possible rather 
 | MERGE target and correlation syntax | `<merge statement>` and target productions | Proper attachment point and ambiguity behavior |
 | MERGE insert specification | Column-list and value-source productions | Include-column membership and degree constraints |
 | MERGE delete plus delta table | Existing MERGE and delta-table General Rules | Whether an exclusion is required or already implied |
+| Include-column data types | Existing data-type applicability rules for data change delta tables | Whether the standard imposes any independent limitation; do not infer one from vendor behavior |
 | Contextually typed values | Relevant value-specification Syntax Rules | Type context for `NULL`, parameter markers, and `DEFAULT` |
 | Store assignment | Existing assignment General Rules | Exact cross-reference and conversion semantics |
 | Access Rules | DML and query Access Rules | Whether “no additional privilege requirement” is sufficient |
