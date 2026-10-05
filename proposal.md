@@ -61,8 +61,8 @@ An **include column** is a column of the row type of a data change delta table t
 1. **Delta tables only.** An `<include column clause>` may appear only when the data change statement is directly contained in a `<data change delta table>`.
 2. **Unique names.** Include column names must be distinct from each other and from every column of the target table or view.
 3. **Definitions.** An include column definition is a name and a data type, with no constraints and no default.
-4. **Data types.** **Provisional, pending verification against ISO/IEC 9075-2:2023 Part 2:** The declared type of an include column is subject to the existing data-type applicability rules for data change delta tables. This proposal introduces no vendor-specific type restriction.
-5. **INSERT degree.** If the insert source supplies an explicit row value, the number of values in each supplied row shall equal the number of columns in the explicit or implicit insert column list plus the number of include columns declared by the `<include column clause>`. Values corresponding to include columns follow the values corresponding to target columns, in declaration order. If an implicit insert column list is used, its membership and ordering are determined entirely by the existing rules for an omitted insert column list; include columns are not members of that implicit list.
+4. **Data types.** **Provisional, pending verification against ISO/IEC 9075-2:2023 Part 2:** Without feature T4xx-01, the declared type of an include column shall not be a LOB type, the XML type, or a distinct type based on either.
+5. **INSERT degree.** The degree of the `<query expression>`, or the number of values in each `<row value expression>`, shall equal the number of columns in the explicit or implicit insert column list plus the number of include columns declared by the `<include column clause>`. Values corresponding to include columns follow the values corresponding to target columns, in declaration order. If an implicit insert column list is used, its membership and ordering are determined entirely by the existing rules for an omitted insert column list; include columns are not members of that implicit list.
 6. **SET assignment.** A `<set clause>` in an UPDATE statement or MERGE update action may assign an include column. Each include column is assigned at most once per `<set clause list>`. An UPDATE statement or MERGE update action that assigns an include column shall contain at least one assignment to a column of the target table or view.
 7. **MERGE insert.** **Provisional, pending verification against the SQL:2023 Part 2 MERGE grammar and Syntax Rules:** A `<merge insert specification>` column list may name include columns. A value in an include column's position assigns that column and isn't inserted into the target. Each include column may be named at most once in the column list. A `<merge insert specification>` that names an include column shall also name at least one column of the target table or view.
 8. **Contextual typing.** **Provisional, pending verification against the SQL:2023 Part 2 grammar and Syntax Rules:** Where a value specification occurs in a position corresponding to an include column, that position has the declared data type of the include column for purposes of contextual typing. An include column definition has no default. `DEFAULT` in such a position is contextually typed as the declared type of the include column.
@@ -163,6 +163,7 @@ FROM FINAL TABLE (
 ## Conformance
 
 - **T4xx, "Include columns in data change delta tables":** a new optional feature (number to be assigned). Requires T495. The title and every T4xx reference in this proposal must be updated when INCITS assigns the feature number.
+- **T4xx-01, "Include columns of LOB and XML types":** provisionally lifts the type restriction in Syntax Rule 4. Requires T4xx. The final type set, title, feature classification, and dependency wording are subject to verification against SQL:2023 Part 2 and Annex F.
 - **MERGE with DELETE:** T4xx does not introduce a separate conformance claim for MERGE delete branches. Its applicability to a MERGE containing a delete branch remains subject to verification against the existing SQL:2023 MERGE and delta-table rules.
 
 ## Exclusions and rationale
@@ -171,7 +172,7 @@ FROM FINAL TABLE (
 - **MERGE with a DELETE action.** The new delta table of a MERGE is the union of its INSERT and UPDATE delta tables, so deleted rows have no image in it. Db2 likewise rejects a MERGE containing a delete operation when it is used as a data-change table (SQLCODE -270). The rule rejects the statement rather than silently dropping rows, and can be relaxed later without breaking existing code.
 - **Action pseudo-column.** Out of scope. The same information is available by assigning an include column in each branch.
 
-Db2's documented restrictions on LOB, XML, and related types are retained as vendor prior art only. They do not define the scope of T4xx. An implementation may impose additional non-standard restrictions, but such restrictions are outside conformance to this proposal.
+The base feature and T4xx-01 deliberately provide separate conformance levels for ordinary include-column types and for implementations that also support LOB and XML include-column values. An implementation claiming T4xx shall satisfy the base type restriction; an implementation claiming T4xx-01 shall satisfy the additional requirements established for those types.
 
 ## Prior art
 
@@ -186,6 +187,7 @@ Db2's documented restrictions on LOB, XML, and related types are retained as ven
 | MERGE with delete rejected as a data-change table | Db2 (SQLCODE -270) | Demonstrated |
 | Include-only UPDATE or INSERT assignment rejected | [Db2 for z/OS (SQLCODE -20260, SQLSTATE 428G5)](https://www.ibm.com/docs/en/db2-for-zos/12.0.0?topic=codes-20260) | Demonstrated |
 | INCLUDE combined with OLD TABLE | Derived from two documented Db2 rules | Design-derived, no example found |
+| INCLUDE-column design provenance | Behm, Rielau, and Swagerman, ["Returning Modified Rows — SELECT Statements with Side Effects"](https://www.cs.toronto.edu/vldb04/protected/eProceedings/contents/pdf/IND1P1.PDF), VLDB 2004 | Originating paper cited by P02-USA-200 |
 | MERGE returning source and target rows | [PostgreSQL 17+ MERGE … RETURNING](https://www.postgresql.org/docs/18/sql-merge.html); [SQL Server OUTPUT](https://learn.microsoft.com/en-us/sql/t-sql/statements/merge-transact-sql?view=sql-server-ver17) | Related mechanism |
 | INSERT … SELECT returning source columns | Not supported by PostgreSQL, SQLite, MariaDB RETURNING; Oracle disallows RETURNING there | Gap |
 
@@ -194,6 +196,8 @@ Db2 also rejects UPDATE and MERGE UPDATE actions that assign only include column
 ## Standards history
 
 Comment P02-USA-200 (DM32.2-2013-00032R2, comment 22, Major Technical) identified a closely related requirement: communicating additional information from a data change delta table, including which MERGE branch fired. It supplied no solution text. The disposition and subsequent treatment remain under review. This proposal does not claim to implement an adopted disposition of that comment.
+
+P02-USA-200 cites Behm, Rielau, and Swagerman's 2004 VLDB paper, *Returning Modified Rows — SELECT Statements with Side Effects*, as the source of the INCLUDE-column concept. That paper is the proposal's primary design provenance: it demonstrates the motivating relational result shape and the implementation value of returning operation-local columns with modified rows. It is cited as prior art, not as normative authority.
 
 The committee-facing questions, alternatives considered, and response posture are recorded in [`research/committee-response-posture.md`](research/committee-response-posture.md). That document is rationale and submission support; it is not normative text.
 
@@ -208,6 +212,7 @@ These fill gaps an implementer would otherwise hit. **Every item in this table i
 | General rule 2: store assignment | How a value becomes the declared type | Reuses existing assignment rules; truncation and cast errors match target columns; one implementation path | 0.85 |
 | Syntax rule 8: contextual typing | Types for NULL and DEFAULT in include positions | Uses the include column's declared type; DEFAULT maps to null without importing unrelated target-column semantics | 0.85 |
 | General rule 5: privileges | Whether assigning needs a privilege | The clause introduces no additional privilege requirement; existing access rules continue to govern evaluated objects and expressions | 0.8 |
+| Syntax rule 4 and T4xx-01: data types | Whether the restricted base type set and subfeature boundary are appropriate | Db2 supplies implementation precedent; the SQL:2023 Part 2 provisions must establish the final conformance boundary | 0.7 |
 | Correlation-name parsing note | Whether `INCLUDE <left paren>` is distinguishable in the intended UPDATE and MERGE placements | No special disambiguation rule is proposed; verify intervening SQL:2023 productions and key-word treatment | 0.75 |
 
 Collation of character include columns follows `<column definition>` rules for the declared type, with implicit derivation. No new rule is proposed (0.7). Assignment-target qualification and the requirement that an include-bearing MERGE insert also name at least one target column are provisional pending the SQL:2023 grammar check.
@@ -216,9 +221,9 @@ Collation of character include columns follows `<column definition>` rules for t
 
 ### Gate 1: P02-USA-200 disposition
 
-Inquiry sent to the INCITS Data Management secretariat. The outcome decides the framing:
-
 The gate deliverable is the exact comment text, ballot-cycle identification, WG/DM disposition record, committee response or disposition category, any successor paper or meeting record, and confirmation of whether the comment was handled editorially, technically rejected, deferred, or superseded by T495 wording.
+
+Inquiry sent to the INCITS Data Management secretariat. The outcome decides the framing:
 
 - Rejected: answer the recorded objection.
 - Deferred pending a paper: this proposal is that paper.
@@ -230,7 +235,7 @@ The gate deliverable is the exact comment text, ballot-cycle identification, WG/
 - Feature list scan, by proxy: PostgreSQL's [supported](https://www.postgresql.org/docs/18/features-sql-standard.html) and [unsupported](https://www.postgresql.org/docs/18/unsupported-features-sql-standard.html) SQL:2023 lists show only T491, T495, and T501 in that range; no delta-table extension (0.8). Replace the proxy with an actual Annex F check when the 2023 text is available.
 - Walk the full grammar chain for delta tables, INSERT, UPDATE, and MERGE, including shared productions. Verify the exact UPDATE/MERGE correlation-name grammar, whether `INCLUDE` is reserved or non-reserved, the standard terminology and rules for an omitted INSERT column list, the placement of the include clause relative to any `<override clause>`, assignment-target qualification, and the productions governing contextual typing. Public grammars stop at SQL:2003, which predates T495, so this needs the standard.
 - Read the normative MERGE and delta-table rules for an existing MERGE+DELETE restriction.
-- Check whether INCLUDE is in the 2023 key-word list, whether it is reserved or non-reserved, and whether the grammar already disambiguates `INCLUDE <left paren>` without a special Syntax Rule.
+- Check whether the grammar already disambiguates `INCLUDE <left paren>` without a special Syntax Rule.
 - Verify the subclause number and exact rules for store assignment; check existing Access Rules, collation derivation, existing data-type applicability rules, and whether assignment-target qualification is already enforced by the grammar.
 - Obtain ISO/IEC 9075-2:2023/Cor 1:2026 (published or current ballot text) and check it for changes affecting `<data change delta table>`, `INSERT`, `UPDATE`, or `MERGE`.
 - Check any other amendment, in-ballot, or current-draft change touching those productions.
@@ -243,6 +248,7 @@ The gate deliverable is the exact comment text, ballot-cycle identification, WG/
 | Source correlation, not ordinals | An ordinal over an unordered source is as arbitrary as execution order |
 | Extend T495 rather than add `RETURNING` | T495 is already standard; RETURNING is not |
 | Declared types, no inference | MERGE branches and DELETE have no single expression to infer from |
+| Base T4xx restriction with optional T4xx-01 | Preserves a claimable base feature for implementations that support ordinary types while providing a separate conformance level for LOB/XML include values |
 | No `GENERATED IDENTITY` keyword | Ordinary projection covers identities, defaults, generated identifiers, and composite keys |
 | Delta table holds changed rows only | Skipped rows can be reconciled against caller-held source keys when those keys are unique |
 | DELETE and MERGE+DELETE excluded | DELETE has no independent source values to preserve and requires new assignment syntax; MERGE DELETE has no corresponding NEW row image |
