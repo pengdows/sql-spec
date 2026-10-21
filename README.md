@@ -8,7 +8,10 @@ Working repository for SQL standardization proposals developed from implementati
 
 The motivating problem is source-row correlation: a data change delta table returns target-row images, but values used to identify or correlate the source row are lost when they are not stored in the target.
 
-The proposal is a work in progress. Core feature semantics are specified; exact integration with the current ISO/IEC 9075-2 working text and the disposition of P02-USA-200 remain research gates.
+The proposal is a work in progress. Core feature semantics are specified; exact
+integration with the current ISO/IEC 9075-2 working text remains the open
+research gate. P02-USA-200 is documented as prior recognition of the problem;
+its successor language opportunity was closed with no action in MEM-054r1.
 
 ## Repository layout
 

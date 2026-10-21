@@ -37,7 +37,9 @@ These alternatives either weaken relational semantics, create portability proble
 
 Before formal submission, preserve:
 
-- The exact P02-USA-200 ballot text and the current disposition inquiry.
+- The exact P02-USA-200 ballot text and the MEM-054r1 disposition record (or a
+  clearly identified correspondence record if the official artifact is not
+  available).
 - The VLDB prior-art citation.
 - The normative proposal revision and exact SQL:2023 edit instructions.
 - A response to each identified technical objection.

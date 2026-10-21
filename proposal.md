@@ -4,7 +4,7 @@
 **Date:** Sep 28, 2026<br>
 **Author:** Alaric [full name to be supplied]<br>
 **Submitted by:** Alaric, on behalf of the Pengdows project<br>
-**Status:** Draft proposal to extend feature T495 (Combined data change and retrieval) with declared pass-through columns for INSERT, UPDATE, and MERGE. The core semantic design is settled; final standards integration and the explicitly marked provisional rules await two research gates: the disposition of ballot comment P02-USA-200 and verification against ISO/IEC 9075-2:2023.
+**Status:** Draft proposal to extend feature T495 (Combined data change and retrieval) with declared pass-through columns for INSERT, UPDATE, and MERGE. The core semantic design is settled; final standards integration and the explicitly marked provisional rules await verification against ISO/IEC 9075-2:2023. The earlier P02-USA-200 language opportunity is recorded as prior recognition of the problem, not as an adopted disposition implemented by this proposal.
 
 When INCITS assigns the document number and feature number, replace the placeholders in this heading and metadata.
 
@@ -195,7 +195,17 @@ Db2 also rejects UPDATE and MERGE UPDATE actions that assign only include column
 
 ## Standards history
 
-Comment P02-USA-200 (DM32.2-2013-00032R2, comment 22, Major Technical) identified a closely related requirement: communicating additional information from a data change delta table, including which MERGE branch fired. It supplied no solution text. The disposition and subsequent treatment remain under review. This proposal does not claim to implement an adopted disposition of that comment.
+Comment P02-USA-200 (DM32.2-2013-00032R2, comment 22, Major Technical)
+identified a closely related requirement: communicating additional information
+from a data change delta table, including which MERGE branch fired. It supplied
+no solution text. At the September 2014 SC32 WG3 meeting it was converted into
+Language Opportunity FND-A20. In the 2016 DIS ballot comments it appeared as
+`P02-USA-040` (MEM-017, sequence 8). MEM-054r1, sequence 8, records that the
+language opportunity was deleted and the comment closed with no action.
+
+This proposal therefore does not claim to implement an adopted disposition of
+P02-USA-200 or FND-A20. It is a new proposal addressing the same previously
+recognized problem, with its own proposed syntax and semantics.
 
 P02-USA-200 cites Behm, Rielau, and Swagerman's 2004 VLDB paper, *Returning Modified Rows — SELECT Statements with Side Effects*, as the source of the INCLUDE-column concept. That paper is the proposal's primary design provenance: it demonstrates the motivating relational result shape and the implementation value of returning operation-local columns with modified rows. It is cited as prior art, not as normative authority.
 
@@ -219,16 +229,18 @@ Collation of character include columns follows `<column definition>` rules for t
 
 ## Research gates
 
-### Gate 1: P02-USA-200 disposition
+### Gate 1: P02-USA-200 disposition — closed
 
-The gate deliverable is the exact comment text, ballot-cycle identification, WG/DM disposition record, committee response or disposition category, any successor paper or meeting record, and confirmation of whether the comment was handled editorially, technically rejected, deferred, or superseded by T495 wording.
+The available standards-history record says that P02-USA-200 was converted at
+the September 2014 SC32 WG3 meeting into Language Opportunity FND-A20, later
+listed as `P02-USA-040` in MEM-017 (2016 DIS ballot comments, sequence 8).
+MEM-054r1 (June 2026), sequence 8, records that the language opportunity was
+deleted and the comment closed with no action.
 
-Inquiry sent to the INCITS Data Management secretariat. The outcome decides the framing:
-
-- Rejected: answer the recorded objection.
-- Deferred pending a paper: this proposal is that paper.
-- Accepted: trace where it disappeared in later drafts.
-- No disposition found: cite it as prior recognition and submit a new proposal.
+This proposal is consequently framed as a new technical proposal addressing a
+previously recognized gap. It does not claim to implement adopted wording or to
+represent a committee assignment. The official MEM-054r1 artifact should still
+be obtained and cited in any formal submission.
 
 ### Gate 2: ISO/IEC 9075-2:2023 verification
 
