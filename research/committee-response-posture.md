@@ -18,7 +18,7 @@ The proposal is therefore not standardizing a private vendor convenience. It sup
 | Why are include columns not target columns? | They are operation-local result columns. They must not alter storage, target constraints, generated columns, referential actions, transition tables, or triggered actions. |
 | Why are include values appended to the row type? | Appending preserves the existing target image and gives every INSERT, UPDATE, and eligible MERGE branch one stable result shape. |
 | Why are DELETE and MERGE delete branches initially excluded? | Standalone DELETE has no independent source relation to correlate, and a MERGE delete branch has no corresponding NEW target-row image. These are scope decisions that can be revisited without changing the core include-column semantics. |
-| Why does the proposal not copy Db2's type restrictions? | Db2 restrictions are recorded as prior art only. The normative feature follows SQL's own data-type applicability rules; vendor behavior does not define the standard. |
+| Why are LOB and XML include columns an optional subfeature? | The draft adopts a Db2-inspired base restriction and proposes a separate optional capability. This boundary is provisional and must be justified against SQL:2023 type applicability and feature dependencies; Db2 behavior alone is insufficient. |
 | What remains unresolved? | Exact SQL:2023 grammar insertion points, keyword treatment, contextual typing cross-references, access rules, collation rules, MERGE-delete interaction, and any effect of Cor 1:2026 or current ballot text. |
 
 ## Alternatives considered
