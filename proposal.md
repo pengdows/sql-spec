@@ -2,13 +2,13 @@
 
 **Document number:** To be assigned by INCITS Data Management<br>
 **Date:** Sep 28, 2026<br>
-**Author:** Alaric [full name to be supplied]<br>
+**Author:** Alaric Dailey<br>
 **Submitted by:** Alaric, on behalf of the Pengdows project<br>
 **Status:** Draft proposal to extend feature T495 (Combined data change and retrieval) with declared pass-through columns for INSERT, UPDATE, and MERGE. The core semantic design is settled; final standards integration and the explicitly marked provisional rules await verification against ISO/IEC 9075-2:2023. The earlier P02-USA-200 language opportunity is recorded as prior recognition of the problem, not as an adopted disposition implemented by this proposal.
 
 When INCITS assigns the document number and feature number, replace the placeholders in this heading and metadata.
 
-Syntax, Syntax rules, General rules, and Conformance are normative proposal text, subject to the provisional qualifications explicitly stated below. Every provisional rule is pending verification against the relevant ISO/IEC 9075-2:2023 Part 2 grammar, Syntax Rules, General Rules, and Access Rules; Annex F is used only for feature classification. Everything from Exclusions onward is rationale, research, and working notes, kept separate so explanatory prose doesn't leak into the rules.
+Syntax, Syntax rules, General rules, and Conformance are normative proposal text, subject to the provisional qualifications explicitly stated below. Every provisional rule is pending verification against the relevant ISO/IEC 9075-2:2023 Part 2 grammar, Syntax Rules, General Rules, and Access Rules; Annex D is used for optional-feature classification. Everything from Exclusions onward is rationale, research, and working notes, kept separate so explanatory prose doesn't leak into the rules.
 
 ## Abstract
 
@@ -163,7 +163,7 @@ FROM FINAL TABLE (
 ## Conformance
 
 - **T4xx, "Include columns in data change delta tables":** a new optional feature (number to be assigned). Requires T495. The title and every T4xx reference in this proposal must be updated when INCITS assigns the feature number.
-- **T4xx-01, "Include columns of LOB and XML types":** provisionally lifts the type restriction in Syntax Rule 4. Requires T4xx. The final type set, title, feature classification, and dependency wording are subject to verification against SQL:2023 Part 2 and Annex F.
+- **T4xx-01, "Include columns of LOB and XML types":** provisionally lifts the type restriction in Syntax Rule 4. Requires T4xx. The final type set, title, feature classification, and dependency wording are subject to verification against SQL:2023 Part 2 and Annex D.
 - **MERGE with DELETE:** T4xx does not introduce a separate conformance claim for MERGE delete branches. Its applicability to a MERGE containing a delete branch remains subject to verification against the existing SQL:2023 MERGE and delta-table rules.
 
 ## Exclusions and rationale
@@ -244,7 +244,7 @@ be obtained and cited in any formal submission.
 
 ### Gate 2: ISO/IEC 9075-2:2023 verification
 
-- Feature list scan, by proxy: PostgreSQL's [supported](https://www.postgresql.org/docs/18/features-sql-standard.html) and [unsupported](https://www.postgresql.org/docs/18/unsupported-features-sql-standard.html) SQL:2023 lists show only T491, T495, and T501 in that range; no delta-table extension (0.8). Replace the proxy with an actual Annex F check when the 2023 text is available.
+- Feature list scan, by proxy: PostgreSQL's [supported](https://www.postgresql.org/docs/18/features-sql-standard.html) and [unsupported](https://www.postgresql.org/docs/18/unsupported-features-sql-standard.html) SQL:2023 lists show only T491, T495, and T501 in that range; no delta-table extension (0.8). Replace the proxy with an actual Annex D check when the 2023 text is available.
 - Walk the full grammar chain for delta tables, INSERT, UPDATE, and MERGE, including shared productions. Verify the exact UPDATE/MERGE correlation-name grammar, whether `INCLUDE` is reserved or non-reserved, the standard terminology and rules for an omitted INSERT column list, the placement of the include clause relative to any `<override clause>`, assignment-target qualification, and the productions governing contextual typing. Public grammars stop at SQL:2003, which predates T495, so this needs the standard.
 - Read the normative MERGE and delta-table rules for an existing MERGE+DELETE restriction.
 - Check whether the grammar already disambiguates `INCLUDE <left paren>` without a special Syntax Rule.
